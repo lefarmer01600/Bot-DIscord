@@ -5,7 +5,7 @@ const Client = new Discord.Client;
 
 const prefix = "!"
 
-
+let dispatcher
 
 Client.on("ready",() => {
     console.log("bot on");
@@ -17,13 +17,14 @@ Client.on("message", message => {
             message.member.voice.channel.join().then(connection =>{
                 let args = message.content.split(" ");
                 
-                let dispatcher = connection.play(ytdl(args[1], { quality: "highestaudio" }), { volume: args[2]/100});
+                let dispatcher1 = connection.play(ytdl(args[1], { quality: "highestaudio" }), { volume: args[2]/100});
+                this.dispatcher = dispatcher1
 
-                dispatcher.on("finish", () => {
-                    dispatcher.destroy();
+                dispatcher1.on("finish", () => {
+                    dispatcher1.destroy();
                     connection.disconnect();
                 });
-                dispatcher.on("error", err => {
+                dispatcher1.on("error", err => {
                     console.log("err dispatcher" + err);
                 });
             }).catch(err => {
