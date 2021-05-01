@@ -6,21 +6,21 @@ const ytdl = require("ytdl-core");
 
 const Client = new Discord.Client;
 var list = []
-var time = []
-var t = 0
-var interval = 1000;
-var expected = Date.now() + interval;
-function step() {
-    var dt = Date.now() - expected;
-    if (dt > interval) {
-    }
-    time = [] 
-    t = t+1
-    time.push(t);
-    console.log(time[0]);
-    expected += interval;
-    setTimeout(step, Math.max(0, interval - dt));
-}
+// var time = []
+// var t = 0
+// var interval = 1000;
+// var expected = Date.now() + interval;
+// function step() {
+//     var dt = Date.now() - expected;
+//     if (dt > interval) {
+//     }
+//     time = [] 
+//     t = t+1
+//     time.push(t);
+//     console.log(time[0]);
+//     expected += interval;
+//     setTimeout(step, Math.max(0, interval - dt));
+// }
 
 const prefix = "!"
 
@@ -34,10 +34,10 @@ Client.on("message", message => {
             let args = message.content.split(" ");
             if(args[1].startsWith("https://www.youtube.com/watch?v=")){
                 message.member.voice.channel.join().then(connection =>{
-
-                    if (args[2] != undefined){
+                        if(args[2] == undefined){
+                            args.push(5);
+                        }
                         let dispatcher = connection.play(ytdl(args[1], { quality: "highestaudio",filter: "audioonly" }), { volume: args[2]/100});
-
                         list.push(args[1]);
 
                         // getInfo(list[0]).then(info => {
@@ -56,30 +56,7 @@ Client.on("message", message => {
                         dispatcher.on("error", err => {
                             console.log("err dispatcher" + err);
                         });
-                    }else{
-                        let dispatcher = connection.play(ytdl(args[1], { quality: "highestaudio",filter: "audioonly" }), { volume: 0.5});
-                    
-                        list.push(args[1]);
-
-                        // getInfo(list[0]).then(info => {
-                        //     message.reply("vous écoutez actuellement:\n" + info.items[0].title)
-                        //         })
-    
-                        // var timer = setTimeout(step, interval);
-                        // function stoptimer() {
-                        //     clearInterval(timer[0]);
-                        // }
-    
-                        dispatcher.on("finish", () => {
-                            dispatcher.destroy();
-                            // connection.disconnect();
-                        });
-                        dispatcher.on("error", err => {
-                            console.log("err dispatcher" + err);
-                        });
-                    
-                    }
-                    
+  
                    
                 }).catch(err => {
                     message.reply("Erreur de connection :" + err);
@@ -167,6 +144,5 @@ Client.on("message", message => {
         message.delete();
     }
     });
-
 Client.login(process.env.TOKEN);
 //Client.login("Njk3NzY2MzQ5NzY1ODY5NTc5.Xo8DjQ.ggxdTcjsEPdoUkOzvybV3Zw_3fM");
