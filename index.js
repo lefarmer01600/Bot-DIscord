@@ -13,7 +13,7 @@ var list = []
 // function step() {
 //     var dt = Date.now() - expected;
 //     if (dt > interval) {
-//     }
+//     }a
 //     time = [] 
 //     t = t+1
 //     time.push(t);
@@ -97,6 +97,9 @@ Client.on("message", message => {
             message.member.voice.channel.leave()
             message.delete();
     }
+    if(message.content.startsWith(prefix + "help")){
+        message.reply("Toutes les commandes si dessous:\n permet de jouer une musique: !play 'le lien de votre musique' optionnel: 'volume de votre musique de 1 a 100'\nFait rejoindre le bot dans le channel où vous êtes: !summon\nFait quitter le bot: !leave\nDefinit le volume de la musique (fait recommencer la musique a 0): !volume 'chiffre de 1 a 100'")
+}
 
     if(message.content.startsWith(prefix + "summon" || prefix + "join")){
         if(message.member.voice.channel){
