@@ -139,7 +139,7 @@ Client.on("message", message => {
         }
         //message.delete();
     }
-    if(message.channel == 764557963653283872 && message.member != 697766349765869579){
+    if(message.channel == 837216778269622322 && message.member != 837337747463209025){
         message.delete()
     }
     });
