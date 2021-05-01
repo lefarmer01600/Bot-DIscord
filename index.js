@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
-const { getInfo } = require('ytdl-getinfo');
+//const { getInfo } = require('ytdl-getinfo');
 //const yts = require("yts");
 
 
@@ -86,30 +86,30 @@ Client.on("message", message => {
                 })
             }else if(args[1] == undefined){
                 message.reply("veuillez renseigner un lien ou une recherche de musique")
-            }else{
-                message.member.voice.channel.join().then(connection =>{
+            }//else{
+            //     message.member.voice.channel.join().then(connection =>{
                     
-                    getInfo(args.slice(1)).then(info => {
-                        list.push(info.items[0].url);
-                        console.log("test "+ info.items[0].url)
-                      });
+            //         getInfo(args.slice(1)).then(info => {
+            //             list.push(info.items[0].url);
+            //             console.log("test "+ info.items[0].url)
+            //           });
 
                     
 
-                    let dispatcher = connection.play(ytdl(list[0], { quality: "highestaudio",filter: "audioonly" }), { volume: 0.5});
-                    //time = setTimeout(step, interval);
+            //         let dispatcher = connection.play(ytdl(list[0], { quality: "highestaudio",filter: "audioonly" }), { volume: 0.5});
+            //         //time = setTimeout(step, interval);
                     
-                    dispatcher.on("finish", () => {
-                        dispatcher.destroy();
-                        // connection.disconnect();
-                    });
-                    dispatcher.on("error", err => {
-                        console.log("err dispatcher" + err);
-                    });
-                }).catch(err => {
-                    message.reply("Erreur de connection :" + err);
-                })
-            }
+            //         dispatcher.on("finish", () => {
+            //             dispatcher.destroy();
+            //             // connection.disconnect();
+            //         });
+            //         dispatcher.on("error", err => {
+            //             console.log("err dispatcher" + err);
+            //         });
+            //     }).catch(err => {
+            //         message.reply("Erreur de connection :" + err);
+            //     })
+            // }
         }
         else {
             message.reply("Vous n'êtes pas connecté en vocal.");
