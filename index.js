@@ -34,12 +34,12 @@ Client.on("message", message => {
             let args = message.content.split(" ");
             if(args[1].startsWith("https://www.youtube.com/watch?v=")){
                 message.member.voice.channel.join().then(connection =>{
-                        if(args[2] == undefined){
-                            args.push(5);
-                        }
+                        // if(args[2] == undefined){
+                        //     args.push(5);
+                        // }
                         let dispatcher = connection.play(ytdl(args[1], { quality: "highestaudio",filter: "audioonly" }), { volume: args[2]/100});
                         list.push(args[1]);
-
+                        message.channel.send(args[1])
                         // getInfo(list[0]).then(info => {
                         //     message.reply("vous écoutez actuellement:\n" + info.items[0].title)
                         //         })
@@ -60,7 +60,7 @@ Client.on("message", message => {
                    
                 }).catch(err => {
                     message.reply("Erreur de connection :" + err);
-                })
+                });
             }else if(args[1] == undefined){
                 message.reply("veuillez renseigner un lien ou une recherche de musique")
             }//else{
@@ -91,14 +91,12 @@ Client.on("message", message => {
         else {
             message.reply("Vous n'êtes pas connecté en vocal.");
         }
-        message.delete();
     }
     if(message.content.startsWith(prefix + "leave")){
             message.member.voice.channel.leave()
-            message.delete();
     }
     if(message.content.startsWith(prefix + "help")){
-        message.reply("Toutes les commandes si dessous:\n permet de jouer une musique: !play 'le lien de votre musique' optionnel: 'volume de votre musique de 1 a 100'\nFait rejoindre le bot dans le channel où vous êtes: !summon\nFait quitter le bot: !leave\nDefinit le volume de la musique (fait recommencer la musique a 0): !volume 'chiffre de 1 a 100'")
+        message.channel.send("Toutes les commandes si dessous:\nPermet de jouer une musique: !play 'le lien de votre musique' optionnel: 'volume de votre musique de 1 a 100'\nFait rejoindre le bot dans le channel où vous êtes: !summon ou !join\nFait quitter le bot: !leave\nDefinit le volume de la musique (fait recommencer la musique a 0): !volume 'chiffre de 1 a 100'\nInfo sur la musique entrain d'être joué: !info")
 }
 
     if(message.content.startsWith(prefix + "summon" || prefix + "join")){
@@ -108,14 +106,13 @@ Client.on("message", message => {
         else {
             message.reply("Vous n'êtes pas connecté en vocal.");
         }
-        message.delete();
     }    
     if(message.content.startsWith(prefix + "volume")){
         if(message.member.voice.channel){
             message.member.voice.channel.join().then(connection =>{
                 let args = message.content.split(" ");
                 let dispatcher = connection.play(ytdl(list[0], {quality: "highestaudio",filter: "audioonly"}), { volume: args[1]/100});
-                message.reply("Volume mis à : "+args[1])
+                message.channel.send("Volume mis à : "+args[1])
                 //stoptimer()
                 time = []
                 dispatcher.on("finish", () => {
@@ -129,23 +126,23 @@ Client.on("message", message => {
                 message.reply("Erreur de connection :" + err);
             })
         }
-        message.delete();
     }
     if(message.content.startsWith(prefix + "info")){
         if(message.member.voice.channel){
-            message.member.voice.channel.join().then(connection =>{
-                let args = message.content.split(" ");
+        
+                //let args = message.content.split(" ");
                 // getInfo(list[0]).then(info => {
                 //     // info.items[0] should contain the output of youtube-dl --dump-json
                 //message.reply("vous écoutez actuellement:\n" + list[0])
                 //     })
-                message.reply("vous écoutez actuellement:\n" + list[0])
-            }).catch(err => {
-                message.reply("Erreur de connection :" + err);
-            })
+                message.channel.send("vous écoutez actuellement:\n" + list[0])
         }
-        message.delete();
+        //message.delete();
+    }
+    if(message.channel == 764557963653283872 && message.member != 697766349765869579){
+        message.delete()
     }
     });
+
 Client.login(process.env.TOKEN);
 //Client.login("Njk3NzY2MzQ5NzY1ODY5NTc5.Xo8DjQ.ggxdTcjsEPdoUkOzvybV3Zw_3fM");
