@@ -153,5 +153,5 @@ Client.on("message", async message => {
     }
     });
 
-//Client.login(process.env.TOKEN);
-Client.login("Njk3NzY2MzQ5NzY1ODY5NTc5.Xo8DjQ.ggxdTcjsEPdoUkOzvybV3Zw_3fM");
+Client.login(process.env.TOKEN);
+//Client.login("Njk3NzY2MzQ5NzY1ODY5NTc5.Xo8DjQ.ggxdTcjsEPdoUkOzvybV3Zw_3fM");
