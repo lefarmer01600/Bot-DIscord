@@ -83,6 +83,7 @@ Client.on("message", async message => {
 
                     let dispatcher = connection.play(ytdl(song.url, { quality: "highestaudio",filter: "audioonly" }), { volume: 0.05});
                     //time = setTimeout(step, interval);
+                    message.channel.send(song.url)
                     
                     dispatcher.on("finish", () => {
                         dispatcher.destroy();
