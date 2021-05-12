@@ -149,7 +149,7 @@ Client.on("message", async message => {
         }
         //message.delete();
     }
-    if(message.channel == 837216778269622322  && message.member != 837337747463209025){
+    if(message.channel == 837216778269622322  && message.member != 837337747463209025 && message.member != 842132455913291808){
         message.delete()
     }
     });
