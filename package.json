@@ -5,16 +5,19 @@
   "main": "index.js",
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
-    "discord.js": "^12.1.1",
+    "discord.js": "^12.5.3",
+    "discord.js-commando": "^0.12.3",
     "ffmpeg-static": "^4.3.0",
     "fs": "^0.0.1-security",
+    "jamy": "^0.3.0",
     "opusscript": "0.0.8",
-    "ytdl-core": "^4.5.0"
+    "yt-search": "^2.8.0",
+    "ytdl-core": "^4.7.0",
+    "ytdl-getinfo": "^1.1.0",
+    "yts": "^2.0.0",
+    "ytsr": "^3.5.0"
   },
   "devDependencies": {},
-  "scripts": {
-    "start": "node index.js"
-  },
   "author": "",
   "license": "ISC"
 }
