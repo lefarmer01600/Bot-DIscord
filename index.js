@@ -1,10 +1,11 @@
-const Discord = require("discord.js");
+const Commando = require("discord.js-commando");
 const ytdl = require("ytdl-core");
 //const { getInfo } = require('ytdl-getinfo');
-//const yts = require("yts");
+const yts = require("yt-search");
 
 
-const Client = new Discord.Client;
+const Client = new Commando.Client;
+
 var list = []
 // var time = []
 // var t = 0
@@ -28,16 +29,17 @@ Client.on("ready",() => {
     console.log("bot on");
 });
 
-Client.on("message", message => {
+Client.on("message", async message => {
     if(message.content.startsWith(prefix + "play")){
         if(message.member.voice.channel){
             let args = message.content.split(" ");
             if(args[1].startsWith("https://www.youtube.com/watch?v=")){
                 message.member.voice.channel.join().then(connection =>{
-                        // if(args[2] == undefined){
-                        //     args.push(5);
-                        // }
+                        if(args[2] == undefined){
+                             args.push(5);
+                        }
                         let dispatcher = connection.play(ytdl(args[1], { quality: "highestaudio",filter: "audioonly" }), { volume: args[2]/100});
+
                         list.push(args[1]);
                         message.channel.send(args[1])
                         // getInfo(list[0]).then(info => {
@@ -63,30 +65,36 @@ Client.on("message", message => {
                 });
             }else if(args[1] == undefined){
                 message.reply("veuillez renseigner un lien ou une recherche de musique")
-            }//else{
-            //     message.member.voice.channel.join().then(connection =>{
+            }else{
+                message.member.voice.channel.join().then(async connection =>{
                     
-            //         getInfo(args.slice(1)).then(info => {
-            //             list.push(info.items[0].url);
-            //             console.log("test "+ info.items[0].url)
-            //           });
+                    // getInfo(args.slice(1)).then(info => {
+                    //     list.push(info.items[0].url);
+                    //     console.log("test "+ info.items[0].url)
+                    //   });
+                    
+                    let videos = await yts(args.slice(1).join(" "));
+                    //if (!videos.length) return message.channel.send("Aucune musique trouvée");
+                    const song = {
+                        title: videos.videos[0].name,
+                        url: videos.videos[0].url
+                    };
+                    list.push(song.url);
 
+                    let dispatcher = connection.play(ytdl(song.url, { quality: "highestaudio",filter: "audioonly" }), { volume: 0.05});
+                    //time = setTimeout(step, interval);
                     
-
-            //         let dispatcher = connection.play(ytdl(list[0], { quality: "highestaudio",filter: "audioonly" }), { volume: 0.5});
-            //         //time = setTimeout(step, interval);
-                    
-            //         dispatcher.on("finish", () => {
-            //             dispatcher.destroy();
-            //             // connection.disconnect();
-            //         });
-            //         dispatcher.on("error", err => {
-            //             console.log("err dispatcher" + err);
-            //         });
-            //     }).catch(err => {
-            //         message.reply("Erreur de connection :" + err);
-            //     })
-            // }
+                    dispatcher.on("finish", () => {
+                        dispatcher.destroy();
+                        // connection.disconnect();
+                    });
+                    dispatcher.on("error", err => {
+                        console.log("err dispatcher" + err);
+                    });
+                }).catch(err => {
+                    message.reply("Erreur de connection :" + err);
+                })
+            }
         }
         else {
             message.reply("Vous n'êtes pas connecté en vocal.");
@@ -96,7 +104,7 @@ Client.on("message", message => {
             message.member.voice.channel.leave()
     }
     if(message.content.startsWith(prefix + "help")){
-        message.channel.send("Toutes les commandes si dessous:\nPermet de jouer une musique: !play 'le lien de votre musique' optionnel: 'volume de votre musique de 1 a 100'\nFait rejoindre le bot dans le channel où vous êtes: !summon ou !join\nFait quitter le bot: !leave\nDefinit le volume de la musique (fait recommencer la musique a 0): !volume 'chiffre de 1 a 100'\nInfo sur la musique entrain d'être joué: !info")
+        message.channel.send("Toutes les commandes si dessous:\nPermet de jouer une musique: !play 'le lien de votre musique' ou 'nom de votre musique' optionnel: 'volume de votre musique de 1 a 100'\nFait rejoindre le bot dans le channel où vous êtes: !summon ou !join\nFait quitter le bot: !leave\nDefinit le volume de la musique (fait recommencer la musique a 0): !volume 'chiffre de 1 a 100'\nInfo sur la musique entrain d'être joué: !info")
 }
 
     if(message.content.startsWith(prefix + "summon" || prefix + "join")){
@@ -112,6 +120,7 @@ Client.on("message", message => {
             message.member.voice.channel.join().then(connection =>{
                 let args = message.content.split(" ");
                 let dispatcher = connection.play(ytdl(list[0], {quality: "highestaudio",filter: "audioonly"}), { volume: args[1]/100});
+                
                 message.channel.send("Volume mis à : "+args[1])
                 //stoptimer()
                 time = []
@@ -144,5 +153,5 @@ Client.on("message", message => {
     }
     });
 
-Client.login(process.env.TOKEN);
-//Client.login("Njk3NzY2MzQ5NzY1ODY5NTc5.Xo8DjQ.ggxdTcjsEPdoUkOzvybV3Zw_3fM");
+//Client.login(process.env.TOKEN);
+Client.login("Njk3NzY2MzQ5NzY1ODY5NTc5.Xo8DjQ.ggxdTcjsEPdoUkOzvybV3Zw_3fM");
