@@ -9,13 +9,13 @@ app.listen(port, () => console.log(`Example app listening at http://localhost:${
 
 // start bot code
 const Commando = require("discord.js-commando");
+const { MessageEmbed } = require("discord.js")
 const ytdl = require("ytdl-core");
 //const { getInfo } = require('ytdl-getinfo');
 const yts = require("yt-search");
 
 
 const Client = new Commando.Client;
-
 
 let list = []
     // var time = []
@@ -36,19 +36,27 @@ let list = []
 
 const prefix = ["!"]
 
-const activities_list = [
-    { type: 'PLAYING',  message: 'champjr.co | >help'  },
-    { type: 'WATCHING', message: 'Bitcoin | >help' },
-    { type: 'LISTENING', message: 'Merry Xmas! | >help' }
-];
+// const activities_list = [
+//     { type: 'PLAYING', message: 'champjr.co | >help' },
+//     { type: 'WATCHING', message: 'Bitcoin | >help' },
+//     { type: 'LISTENING', message: 'Merry Xmas! | >help' }
+// ];
+
+// const id = '';
+// const token = '';
+
+// const webhook = new Discord.WebhookClient(id, token);
 
 Client.on("ready", () => {
     console.log("bot on");
-      // setInterval(() => {
-      //   const index = Math.floor(Math.random() * (activities_list.length - 1) + 1);
+    // setInterval(() => {
+    //   const index = Math.floor(Math.random() * (activities_list.length - 1) + 1);
 
-        // Client.user.setActivity(activities_list[index].message, { type: activities_list[index].type });
-      Client.user.setActivity('rien', { type: 'LISTENING' });
+    // Client.user.setActivity(activities_list[index].message, { type: activities_list[index].type });
+    Client.user.setActivity('rien', { type: 'LISTENING' });
+
+    // webhook.send('Hello world.')
+    //     .catch(console.error);
     // }, 10000);
 });
 
@@ -76,15 +84,15 @@ Client.on("message", async message => {
                         url: videos.videos[0].url
                     };
                     list.splice(0, 1, song.url)
-                    // var timer = setTimeout(step, interval);
-                    // function stoptimer() {
-                    //     clearInterval(timer[0]);
-                    // }
-                  Client.user.setActivity(song.title, { type: 'LISTENING'});
-                  
+                        // var timer = setTimeout(step, interval);
+                        // function stoptimer() {
+                        //     clearInterval(timer[0]);
+                        // }
+                    Client.user.setActivity(song.title, { type: 'LISTENING' });
+
                     dispatcher.on("finish", () => {
                         dispatcher.destroy();
-                      Client.user.setActivity('rien', { type: 'LISTENING' });
+                        Client.user.setActivity('rien', { type: 'LISTENING' });
                         // connection.disconnect();
                     });
                     dispatcher.on("error", err => {
@@ -117,12 +125,12 @@ Client.on("message", async message => {
                     let dispatcher = connection.play(ytdl(song.url, { quality: "highestaudio", filter: "audioonly" }), { volume: 0.05 });
                     //time = setTimeout(step, interval);
                     message.channel.send(song.url)
-                    Client.user.setActivity(song.title, { type: 'LISTENING'});
+                    Client.user.setActivity(song.title, { type: 'LISTENING' });
                     dispatcher.on("finish", () => {
                         dispatcher.destroy();
-                      Client.user.setActivity('rien', { type: 'LISTENING' });
-                      console.log("finish")
-                        // connection.disconnect();
+                        Client.user.setActivity('rien', { type: 'LISTENING' });
+                        console.log("finish")
+                            // connection.disconnect();
                     });
                     dispatcher.on("error", err => {
                         console.log("err dispatcher" + err);
@@ -137,10 +145,22 @@ Client.on("message", async message => {
     }
     if (message.content.startsWith(prefix + "leave")) {
         message.member.voice.channel.leave()
-      Client.user.setActivity('rien', { type: 'LISTENING' });
+        Client.user.setActivity('rien', { type: 'LISTENING' });
     }
     if (message.content.startsWith(prefix + "help")) {
-        message.channel.send("Toutes les commandes si dessous:\nPermet de jouer une musique: !play 'le lien de votre musique' ou 'nom de votre musique' optionnel: 'volume de votre musique de 1 a 100'\nFait rejoindre le bot dans le channel où vous êtes: !summon ou !join\nFait quitter le bot: !leave\nDefinit le volume de la musique (fait recommencer la musique a 0): !volume 'chiffre de 1 a 100'\nInfo sur la musique entrain d'être joué: !info")
+        message.channel.send({
+            "embed": {
+                "title": "Toutes les commandes si dessous:",
+                "description": "Permet de jouer une musique: !play 'le lien de votre musique' ou 'nom de votre musique' optionnel: 'volume de votre musique de 1 a 100'\n\nFait rejoindre le bot dans le channel où vous êtes: !summon ou !join\n\nFait quitter le bot: !leave\n\nDefinit le volume de la musique (fait recommencer la musique a 0): !volume 'chiffre de 1 a 100'\n\nInfo sur la musique entrain d'être joué: !info",
+                "url": "https://discordapp.com",
+                "color": 15681840,
+                "timestamp": "2022-04-25T11:41:56.607Z",
+                "footer": {
+                    "icon_url": "https://cdn.discordapp.com/avatars/837337747463209025/1ee22e046c3e59e6d8459181c57e551e.png?size=256",
+                    "text": "Help Command"
+                }
+            }
+        });
     }
 
     if (message.content.startsWith(prefix + "summon" || prefix + "join")) {
@@ -183,7 +203,7 @@ Client.on("message", async message => {
         }
         //message.delete();
     }
-    if (message.channel == 837216778269622322 && message.member != 837337747463209025 && message.member != 842132455913291808) {
+    if ((message.channel == 837216778269622322 || message.channel == 842047334988382239) && message.member != 837337747463209025 && message.member != 842132455913291808) {
         message.delete()
     }
 });
