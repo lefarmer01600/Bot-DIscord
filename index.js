@@ -1,3 +1,13 @@
+// web interface
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => res.send('Hello World!'));
+
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
+
+// start bot code
 const Commando = require("discord.js-commando");
 const ytdl = require("ytdl-core");
 //const { getInfo } = require('ytdl-getinfo');
@@ -6,7 +16,8 @@ const yts = require("yt-search");
 
 const Client = new Commando.Client;
 
-var list = []
+
+let list = []
     // var time = []
     // var t = 0
     // var interval = 1000;
@@ -25,8 +36,20 @@ var list = []
 
 const prefix = ["!"]
 
+const activities_list = [
+    { type: 'PLAYING',  message: 'champjr.co | >help'  },
+    { type: 'WATCHING', message: 'Bitcoin | >help' },
+    { type: 'LISTENING', message: 'Merry Xmas! | >help' }
+];
+
 Client.on("ready", () => {
     console.log("bot on");
+      // setInterval(() => {
+      //   const index = Math.floor(Math.random() * (activities_list.length - 1) + 1);
+
+        // Client.user.setActivity(activities_list[index].message, { type: activities_list[index].type });
+      Client.user.setActivity('rien', { type: 'LISTENING' });
+    // }, 10000);
 });
 
 Client.on("message", async message => {
@@ -34,7 +57,7 @@ Client.on("message", async message => {
         if (message.member.voice.channel) {
             let args = message.content.split(" ");
             if (args[1].startsWith("https://www.youtube.com/watch?v=")) {
-                message.member.voice.channel.join().then(connection => {
+                message.member.voice.channel.join().then(async connection => {
                     if (args[2] == undefined) {
                         args.push(5);
                     }
@@ -46,14 +69,22 @@ Client.on("message", async message => {
                         // getInfo(list[0]).then(info => {
                         //     message.reply("vous écoutez actuellement:\n" + info.items[0].title)
                         //         })
-
+                    let videos = await yts(args.slice(1).join(" "));
+                    //if (!videos.length) return message.channel.send("Aucune musique trouvée");
+                    const song = {
+                        title: videos.videos[0].title,
+                        url: videos.videos[0].url
+                    };
+                    list.splice(0, 1, song.url)
                     // var timer = setTimeout(step, interval);
                     // function stoptimer() {
                     //     clearInterval(timer[0]);
                     // }
-
+                  Client.user.setActivity(song.title, { type: 'LISTENING'});
+                  
                     dispatcher.on("finish", () => {
                         dispatcher.destroy();
+                      Client.user.setActivity('rien', { type: 'LISTENING' });
                         // connection.disconnect();
                     });
                     dispatcher.on("error", err => {
@@ -77,7 +108,7 @@ Client.on("message", async message => {
                     let videos = await yts(args.slice(1).join(" "));
                     //if (!videos.length) return message.channel.send("Aucune musique trouvée");
                     const song = {
-                        title: videos.videos[0].name,
+                        title: videos.videos[0].title,
                         url: videos.videos[0].url
                     };
                     list.splice(0, 1, song.url)
@@ -86,9 +117,11 @@ Client.on("message", async message => {
                     let dispatcher = connection.play(ytdl(song.url, { quality: "highestaudio", filter: "audioonly" }), { volume: 0.05 });
                     //time = setTimeout(step, interval);
                     message.channel.send(song.url)
-
+                    Client.user.setActivity(song.title, { type: 'LISTENING'});
                     dispatcher.on("finish", () => {
                         dispatcher.destroy();
+                      Client.user.setActivity('rien', { type: 'LISTENING' });
+                      console.log("finish")
                         // connection.disconnect();
                     });
                     dispatcher.on("error", err => {
@@ -104,6 +137,7 @@ Client.on("message", async message => {
     }
     if (message.content.startsWith(prefix + "leave")) {
         message.member.voice.channel.leave()
+      Client.user.setActivity('rien', { type: 'LISTENING' });
     }
     if (message.content.startsWith(prefix + "help")) {
         message.channel.send("Toutes les commandes si dessous:\nPermet de jouer une musique: !play 'le lien de votre musique' ou 'nom de votre musique' optionnel: 'volume de votre musique de 1 a 100'\nFait rejoindre le bot dans le channel où vous êtes: !summon ou !join\nFait quitter le bot: !leave\nDefinit le volume de la musique (fait recommencer la musique a 0): !volume 'chiffre de 1 a 100'\nInfo sur la musique entrain d'être joué: !info")
